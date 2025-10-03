@@ -86,6 +86,7 @@ const Calculator: React.FC = () => {
     }
   };
 
+  // ✅ Fixed backspace function
   const backspace = () => {
     if (display === "Error") {
       setDisplay("0");
@@ -93,28 +94,30 @@ const Calculator: React.FC = () => {
       return;
     }
 
-    
+    // If last char is an operator, just remove it
+    if (/[\+\-×/]/.test(expression.slice(-1))) {
+      setExpression(expression.slice(0, -1));
+      setOperation(null);
+      setWaitingForOperand(false);
+      return;
+    }
+
     if (display.length > 1) {
       const newDisplay = display.slice(0, -1);
       setDisplay(newDisplay);
-      
-      
-      if (waitingForOperand) {
-        
-        return;
-      } else {
-        
-        const lastNumberRegex = /(\d+\.?\d*)$/;
-        const newExpression = expression.replace(lastNumberRegex, newDisplay);
-        setExpression(newExpression);
-      }
-    } else {
-      setDisplay("0");
-     
+
+      // Replace only the last number in the expression
       const lastNumberRegex = /(\d+\.?\d*)$/;
-      const newExpression = expression.replace(lastNumberRegex, "0");
+      const newExpression = expression.replace(lastNumberRegex, newDisplay);
       setExpression(newExpression);
+    } else {
+      // Only 1 digit left, remove it and remove from expression
+      setDisplay("0");
+      const newExpression = expression.replace(/(\d+\.?\d*)$/, "");
+      setExpression(newExpression || "0"); // fallback to 0 if empty
     }
+
+    setWaitingForOperand(false);
   };
 
   const handlePress = (label: string) => {
