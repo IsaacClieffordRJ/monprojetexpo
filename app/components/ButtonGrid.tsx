@@ -3,10 +3,12 @@ import { StyleSheet, View } from "react-native";
 import Button from "./Button";
 
 interface ButtonGridProps {
-  onButtonPress: (label: string) => void;
+  onButtonPress?: (label: string) => void; 
 }
 
-const ButtonGrid: React.FC<ButtonGridProps> = ({ onButtonPress }) => {
+const ButtonGrid: React.FC<ButtonGridProps> = ({
+  onButtonPress = (label) => console.log("Pressed:", label), 
+}) => {
   const buttons = [
     ["AC", "/", "×", "⌫"],
     ["7", "8", "9", "-"],
@@ -21,7 +23,7 @@ const ButtonGrid: React.FC<ButtonGridProps> = ({ onButtonPress }) => {
         <Button
           key={button}
           label={button}
-          onPress={onButtonPress}
+          onPress={onButtonPress} // safely passed down
         />
       ))}
     </View>
